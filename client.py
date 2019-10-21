@@ -18,8 +18,8 @@ def connect_to_server(host, port):
 
 def parse_params():
 	parser = argparse.ArgumentParser(description="Client for analyzing TCP's congestion control.")
-	parser.add_argument('-p', '--port', type=int, default=5000, choices=range(0, 65536), metavar="[0-65535]", required=True, help="Port the server is listening to. Default value is 5000.")
-	parser.add_argument('-i', '--host', type=str, default='127.0.0.1', required=True, help="Server's IP. Default value is 127.0.0.1.")
+	parser.add_argument('-p', '--port', type=int, default=5000, choices=range(0, 65536), metavar="[0-65535]", help="Port the server is listening to. Default value is 5000.")
+	parser.add_argument('-i', '--host', type=str, default='127.0.0.1', help="Server's IP. Default value is 127.0.0.1.")
 	args = parser.parse_args()
 	return args.host, args.port
 
