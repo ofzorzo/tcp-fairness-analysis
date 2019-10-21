@@ -6,7 +6,7 @@ import os
 from threading import Thread
 
 def log_to_csv(cliente, log):
-	file_name = os.getcwd() + "\client_" + cliente[0].replace('.', '-') + "_" + str(cliente[1]) + ".csv"
+	file_name = os.getcwd() + "\\client_" + cliente[0].replace('.', '-') + "_" + str(cliente[1]) + ".csv"
 	with open(file_name, mode='w', newline='') as csv_log: # mode='w' creates the file if it does not exist, and empties it if it already exists
 		log_writer = csv.writer(csv_log, delimiter=',')
 		log_writer.writerow(["Time", "bits/s", "MBytes/s"])
@@ -16,6 +16,7 @@ def log_to_csv(cliente, log):
 '''
 ideia pra parsear os resultados:
 	dividir em intervalos. o tempo inicial é dado pela menor primeira linha dentre os .csv's. a partir do tempo inicial eu divido todos os .csv's em intervalos de 0.1s; somo os valores de um dado intervalo, de modo que terei a taxa de transmissão total da rede.
+	um intervalo é dado por [tempo_atual, tempo_atual+0.1). OU SEJA, é um intervalo aberto. Tempo atual seria, por exemplo, a menor primeira linha dentre os .csv's; depois, somaríamos 0.1 a esse tempo atual e o resultado seria o novo tempo atual, para definir o próximo intervalo, do tipo: [tempo_atual+0.1, tempo_atual+0.1+0.1)
 '''
 
 def client_socket(con, cliente):
@@ -64,7 +65,7 @@ def welcoming_socket(host, port):
 
 def parse_params():
 	parser = argparse.ArgumentParser(description="Server for analyzing TCP's congestion control.")
-	parser.add_argument('-p', '--port', type=int, default=5000, choices=range(0, 65536), metavar="[0-65535]", help="Port the server will listen to. Default value is 5000.")
+	parser.add_argument('-p', '--port', type=int, default=5000, choices=range(0, 65536), metavar="[0-65535]", required=True, help="Port the server will listen to. Default value is 5000.")
 	args = parser.parse_args()
 	return args.port
 
