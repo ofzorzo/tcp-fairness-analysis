@@ -3,6 +3,7 @@ import socket
 import argparse
 import csv
 import os
+import const
 from threading import Thread
 
 def log_to_csv(cliente, log):
@@ -26,7 +27,7 @@ def client_socket(con, cliente):
 	curr_bytes = 0
 	log = []
 	while True:
-		if elapsed_time >= 0.1:
+		if elapsed_time >= const.INTERVAL:
 			bits_per_sec = (curr_bytes*8)/elapsed_time
 			mbytes_per_sec = (curr_bytes/1000000)/elapsed_time
 			print( str(bits_per_sec) + " bits/s. Ou " + str(mbytes_per_sec ) + " MBytes/s.")
