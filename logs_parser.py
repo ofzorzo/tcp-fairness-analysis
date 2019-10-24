@@ -2,8 +2,8 @@ import pandas as pd
 import os
 import argparse
 import const
-import numpy as np
 from datetime import datetime
+import matplotlib.pyplot as plt 
 
 def divide_in_intervals(joined):
     first_row = joined.head(1)
@@ -48,6 +48,18 @@ def join_csvs(files):
     df.reset_index(drop=True, inplace=True)
     return df
 
+def plot_csvs(dataframes):
+	for dt in dataframes:
+		time = dt["Time"].tolist()
+		time = [round((t-time[0]), 2) for t in time]	
+		mbytes = dt["MBytes/s"].tolist()
+		mbytes = [round(mb, 2) for mb in mbytes]
+		plt.plot(time, mbytes, label = "Con1")	
+	plt.ylabel('Transmission rate (MBytes/s)')
+	plt.xlabel('Time (seconds)')
+	plt.legend()
+	plt.show() 
+
 # def parse_params():    
 # 	parser = argparse.ArgumentParser(description="Joiner for logs of different Client-Server connections.")
 # 	parser.add_argument('-f', '--files', nargs='+', type=str, required=True, help="CSV's to be joined.")
@@ -55,8 +67,9 @@ def join_csvs(files):
 # 	return args.files
 
 if __name__ == "__main__":
-    files = ["client_127-0-0-1_14002.csv", "client_127-0-0-1_14003.csv"]
-    # files = parse_params()
-    joined = join_csvs(files)
-    joined = divide_in_intervals(joined)
-    organize_comparison(joined, files)
+	files = ["client_127-0-0-1_14002.csv", "client_127-0-0-1_14003.csv"]
+	# files = parse_params()
+	joined = join_csvs(files)
+	joined = divide_in_intervals(joined)
+	plot_csvs([joined])
+    # organize_comparison(joined, files)

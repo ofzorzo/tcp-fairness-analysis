@@ -2,7 +2,6 @@ import socket
 import string
 import random
 import argparse
-from threading import Thread
 
 def random_generator(size=4096, chars=string.ascii_lowercase):
     return ''.join(random.choice(chars) for x in range(size))
