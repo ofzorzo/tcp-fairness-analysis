@@ -30,7 +30,7 @@ def client_socket(con, cliente):
 		if elapsed_time >= const.INTERVAL:
 			bits_per_sec = (curr_bytes*8)/elapsed_time
 			mbytes_per_sec = (curr_bytes/1000000)/elapsed_time
-			print( str(bits_per_sec) + " bits/s. Ou " + str(mbytes_per_sec ) + " MBytes/s.")
+			# print( str(bits_per_sec) + " bits/s. Ou " + str(mbytes_per_sec ) + " MBytes/s.")
 			curr_bytes = 0
 			prev_time = time.time()
 			elapsed_time = time.time() - prev_time
