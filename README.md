@@ -1,5 +1,5 @@
 # tcp-fairness-analysis
-Simples client-server application to analyze TCP's congestion control.
+Simples client-server application to analyze TCP's fairness.
 
 ## Running
 
