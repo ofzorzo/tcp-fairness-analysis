@@ -31,15 +31,6 @@ def divide_in_intervals(joined):
 	
 	return merge_interval
 
-def organize_comparison(joined, files):
-	curr_time = datetime.now()
-	curr_time = "\\comparisons\\" + curr_time.strftime("%d-%m-%Y_%H-%M-%S")
-	target_folder = os.getcwd() + curr_time
-	os.mkdir(target_folder)
-	for file in files:
-		os.replace(file, target_folder+"\\"+file)
-	joined.to_csv(target_folder+"\\comparison.csv", index=False)
-
 def join_csvs(files):
 	df = pd.read_csv(files[0])
 	for i in range(1, len(files)):
@@ -69,6 +60,66 @@ def plot_dataframes(dataframes):
 	plt.legend()
 	plt.show()
 
+# def files_to_dataframes(files):
+# 	None
+
+def interpolate_dataframes(dataframes):
+	index = 0
+	base_time = dataframes[0]["Time"].tolist()[0]
+	max_time = dataframes[0]["Time"].tolist()[-1] - base_time + const.INTERVAL
+	x = [round((t-base_time), 2) for t in dataframes[0]["Time"].tolist()]
+	# print(x)
+	del dataframes[0]
+	lines = []
+	zero_padding_before = []
+	zero_padding_after = []
+	for dt in dataframes:
+		time = dt["Time"].tolist()
+		time = [round((t-base_time), 2) for t in time]	
+		mbytes = dt["MBytes/s"].tolist()
+		mbytes = [round(mb, 4) for mb in mbytes]
+		zeros = 0
+		for t in x:
+			if t < time[0]:
+				zeros += 1
+			else:
+				break
+		zero_padding_before.append(zeros)
+		zeros = 0
+		max_time = time[-1]
+		for t in x:
+			if max_time < t:
+				zeros += 1
+		zero_padding_after.append(zeros)
+		lines.append([time, mbytes])
+	total = []
+	for i in x:
+		total.append(0)
+	for i in range(0, len(lines)):
+		interp = np.interp(x, lines[i][0], lines[i][1])
+		for j in range(0, zero_padding_before[i]):
+			interp[j] = 0
+		for j in range(0, zero_padding_after[i]):
+			interp[-1-j] = 0
+		for j in range(0, len(interp)):
+			total[j] += interp[j]
+		plt.plot(x, interp, label = "Con "+str(index))
+		index += 1
+	plt.plot(x, total, label = "Total")
+	plt.ylabel('Transmission rate (MBytes/s)')
+	plt.xlabel('Time (seconds)')
+	plt.legend()
+	plt.show()
+
+def organize_comparison(joined, files):
+	curr_time = datetime.now()
+	curr_time = "\\comparisons\\" + curr_time.strftime("%d-%m-%Y_%H-%M-%S")
+	target_folder = os.getcwd() + curr_time
+	os.mkdir(target_folder)
+	for file in files:
+		os.replace(file, target_folder+"\\"+file)
+	joined.to_csv(target_folder+"\\comparison.csv", index=False)
+
 def parse_params():    
 	parser = argparse.ArgumentParser(description="Joiner for logs of different Client-Server connections.")
 	parser.add_argument('-f', '--files', nargs='+', type=str, required=True, help="CSV's to be joined.")
@@ -85,4 +136,5 @@ if __name__ == "__main__":
 		new_df = pd.read_csv(files[i])
 		dataframes.append(new_df)
 	organize_comparison(joined, files)
-	plot_dataframes(dataframes)
+	# plot_dataframes(dataframes)
+	interpolate_dataframes(dataframes)
