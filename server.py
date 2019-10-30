@@ -14,12 +14,6 @@ def log_to_csv(cliente, log):
 		for row in log:
 			log_writer.writerow(row)
 
-'''
-ideia pra parsear os resultados:
-	dividir em intervalos. o tempo inicial é dado pela menor primeira linha dentre os .csv's. a partir do tempo inicial eu divido todos os .csv's em intervalos de 0.1s; somo os valores de um dado intervalo, de modo que terei a taxa de transmissão total da rede.
-	um intervalo é dado por [tempo_atual, tempo_atual+0.1). OU SEJA, é um intervalo aberto. Tempo atual seria, por exemplo, a menor primeira linha dentre os .csv's; depois, somaríamos 0.1 a esse tempo atual e o resultado seria o novo tempo atual, para definir o próximo intervalo, do tipo: [tempo_atual+0.1, tempo_atual+0.1+0.1)
-'''
-
 def client_socket(con, cliente):
 	print('Conectado por', cliente)
 	prev_time = time.time()
