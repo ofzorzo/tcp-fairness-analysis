@@ -2,15 +2,16 @@ import socket
 import string
 import random
 import argparse
+import const
 
-def random_generator(size=4096, chars=string.ascii_lowercase):
+def random_generator(size, chars=string.ascii_lowercase):
     return ''.join(random.choice(chars) for x in range(size))
 
 def connect_to_server(host, port):
     tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     dest = (host, port)
     tcp.connect(dest)
-    msg = random_generator()
+    msg = random_generator(size=const.BYTES_SENT)
     while True:
         tcp.send(msg.encode()) # https://docs.python.org/2/library/socket.html#socket.socket.send
     tcp.close()

@@ -24,7 +24,6 @@ def client_socket(con, cliente):
 		if elapsed_time >= const.INTERVAL:
 			bits_per_sec = (curr_bytes*8)/elapsed_time
 			mbytes_per_sec = (curr_bytes/1000000)/elapsed_time
-			# print( str(bits_per_sec) + " bits/s. Ou " + str(mbytes_per_sec ) + " MBytes/s.")
 			curr_bytes = 0
 			prev_time = time.time()
 			elapsed_time = time.time() - prev_time
@@ -32,7 +31,7 @@ def client_socket(con, cliente):
 		else:
 			elapsed_time = time.time() - prev_time
 		try:
-			msg = con.recv(65536) # maximum data to be received (aka maximum number of bytes taken from the TCP Buffer in the OS; the number of bytes received/taken might be lower if the buffer doesn't have that many bytes): https://docs.python.org/3/library/socket.html#socket.socket.recv
+			msg = con.recv(const.BYTES_RECEIVED) # maximum data to be received (aka maximum number of bytes taken from the TCP Buffer in the OS; the number of bytes received/taken might be lower if the buffer doesn't have that many bytes): https://docs.python.org/3/library/socket.html#socket.socket.recv
 			curr_bytes += len(msg)
 			if not msg:
 				break
