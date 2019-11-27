@@ -42,8 +42,8 @@ def interpolate_connections(x, base_time, conns):
 	for c in conns:
 		time = c["Time"].tolist()
 		time = [round((t-base_time), 2) for t in time]	
-		mbytes = c["MBytes/s"].tolist()
-		mbytes = [round(mb, 4) for mb in mbytes]
+		mbits = c["MBits/s"].tolist()
+		mbits = [round(mb, 4) for mb in mbits]
 		zeros = 0
 		for t in x:
 			if t < time[0]:
@@ -55,7 +55,7 @@ def interpolate_connections(x, base_time, conns):
 			if max_time < t:
 				zeros += 1
 		zero_padding_after.append(zeros)
-		lines.append([time, mbytes])
+		lines.append([time, mbits])
 	interpolated_lines = []
 	for i in range(0, len(lines)):
 		interp = np.interp(x, lines[i][0], lines[i][1])
@@ -82,7 +82,7 @@ def plot_connections(times, conns, total):
 		plt.plot(times, c, label = "Con "+str(index))
 		index += 1
 	plt.plot(times, total, label = "Total")
-	plt.ylabel('Transmission rate (MBytes/s)')
+	plt.ylabel('Transmission rate (MBits/s)')
 	plt.xlabel('Time (seconds)')
 	plt.legend()
 	plt.show()
@@ -90,12 +90,12 @@ def plot_connections(times, conns, total):
 
 def organize_comparison(files, fig):
 	curr_time = datetime.now()
-	curr_time = "\\comparisons\\" + curr_time.strftime("%d-%m-%Y_%H-%M-%S")
+	curr_time = "/comparisons/" + curr_time.strftime("%d-%m-%Y_%H-%M-%S")
 	target_folder = os.getcwd() + curr_time
 	os.mkdir(target_folder)
 	for file in files:
-		os.replace(file, target_folder+"\\"+file)
-	fig.savefig(target_folder+"\\tcp_fairness.png")	
+		os.replace(file, target_folder+"/"+file)
+	fig.savefig(target_folder+"/tcp_fairness.png")	
 
 def parse_params():    
 	parser = argparse.ArgumentParser(description="Joiner for logs of different Client-Server connections.")

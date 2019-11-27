@@ -10,7 +10,7 @@ def log_to_csv(cliente, log):
 	file_name = os.getcwd() + "\\client_" + cliente[0].replace('.', '-') + "_" + str(cliente[1]) + ".csv"
 	with open(file_name, mode='w', newline='') as csv_log: # mode='w' creates the file if it does not exist, and empties it if it already exists
 		log_writer = csv.writer(csv_log, delimiter=',')
-		log_writer.writerow(["Time", "bits/s", "MBytes/s"])
+		log_writer.writerow(["Time", "bits/s", "MBytes/s", "MBits/s"])
 		for row in log:
 			log_writer.writerow(row)
 
@@ -24,10 +24,11 @@ def client_socket(con, cliente):
 		if elapsed_time >= const.INTERVAL:
 			bits_per_sec = (curr_bytes*8)/elapsed_time
 			mbytes_per_sec = (curr_bytes/1000000)/elapsed_time
+			mbits_per_sec = ((curr_bytes*8)/1000000)/elapsed_time
 			curr_bytes = 0
 			prev_time = time.time()
 			elapsed_time = time.time() - prev_time
-			log.append([time.time(), bits_per_sec, mbytes_per_sec])
+			log.append([time.time(), bits_per_sec, mbytes_per_sec, mbits_per_sec])
 		else:
 			elapsed_time = time.time() - prev_time
 		try:
