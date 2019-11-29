@@ -6,16 +6,16 @@ import os
 import const
 from threading import Thread
 
-def log_to_csv(cliente, log):
-	file_name = os.getcwd() + "/client_" + cliente[0].replace('.', '-') + "_" + str(cliente[1]) + ".csv"
+def log_to_csv(client, log):
+	file_name = os.getcwd() + "/client_" + client[0].replace('.', '-') + "_" + str(client[1]) + ".csv"
 	with open(file_name, mode='w', newline='') as csv_log: # mode='w' creates the file if it does not exist, and empties it if it already exists
 		log_writer = csv.writer(csv_log, delimiter=',')
 		log_writer.writerow(["Time", "bits/s", "MBytes/s", "MBits/s"])
 		for row in log:
 			log_writer.writerow(row)
 
-def client_socket(con, cliente):
-	print('Conectado por', cliente)
+def client_socket(con, client):
+	print('Connected to client', client)
 	prev_time = time.time()
 	elapsed_time = time.time() - prev_time
 	curr_bytes = 0
@@ -34,14 +34,15 @@ def client_socket(con, cliente):
 		try:
 			msg = con.recv(const.BYTES_RECEIVED) # maximum data to be received (aka maximum number of bytes taken from the TCP Buffer in the OS; the number of bytes received/taken might be lower if the buffer doesn't have that many bytes): https://docs.python.org/3/library/socket.html#socket.socket.recv
 			curr_bytes += len(msg)
-			if not msg:
-				break
-		except:
-			print("Connection was forcibly closed by the remote host.")
-			exit()
-	print('Finalizando conexao do cliente', cliente)
-	con.close()
-	log_to_csv(cliente, log)
+			if not msg: # empty string means the client closed the connection gracefully...
+				con.close() # ... so we also close it.
+				print('Connection with client terminated gracefully.', client)
+				log_to_csv(client, log)
+				return
+		except: # recv() might raise an exception if the connection was closed ungracefully. See WSAECONNRESET at https://docs.microsoft.com/pt-br/windows/win32/winsock/windows-sockets-error-codes-2?redirectedfrom=MSDN
+			print("Connection was closed due to an error.")
+			log_to_csv(client, log)
+			return
 
 def welcoming_socket(host, port):
 	tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -50,11 +51,11 @@ def welcoming_socket(host, port):
 	tcp.listen(1)
 	threads = []
 	while True:
-		con, cliente = tcp.accept()
-		t = Thread(target=client_socket, args=[con, cliente])
+		con, client = tcp.accept()
+		t = Thread(target=client_socket, args=[con, client])
 		threads.append(t)
 		t.start()
-	for t in threads:
+	for t in threads: # if we someday decide to break out of the above loop, the following code must be executed
 		t.join()
 	tcp.close()
 
