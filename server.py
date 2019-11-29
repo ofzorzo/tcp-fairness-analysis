@@ -60,7 +60,7 @@ def welcoming_socket(host, port):
 	tcp.close()
 
 def parse_params():
-	parser = argparse.ArgumentParser(description="Server for analyzing TCP's congestion control.")
+	parser = argparse.ArgumentParser(description="Server for analyzing TCP's fairness.")
 	parser.add_argument('-p', '--port', type=int, default=5000, choices=range(0, 65536), metavar="[0-65535]", help="Port the server will listen to. Default value is 5000.")
 	args = parser.parse_args()
 	return args.port
