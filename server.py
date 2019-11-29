@@ -7,7 +7,7 @@ import const
 from threading import Thread
 
 def log_to_csv(cliente, log):
-	file_name = os.getcwd() + "\\client_" + cliente[0].replace('.', '-') + "_" + str(cliente[1]) + ".csv"
+	file_name = os.getcwd() + "/client_" + cliente[0].replace('.', '-') + "_" + str(cliente[1]) + ".csv"
 	with open(file_name, mode='w', newline='') as csv_log: # mode='w' creates the file if it does not exist, and empties it if it already exists
 		log_writer = csv.writer(csv_log, delimiter=',')
 		log_writer.writerow(["Time", "bits/s", "MBytes/s", "MBits/s"])
